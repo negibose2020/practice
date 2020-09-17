@@ -1,3 +1,5 @@
+// canvasWidth と canvasHeight をユーザが入力する。
+
 function resizeCanvas() {
     var canvas = document.getElementById("canvas");
     var canvasWidth = 500;
