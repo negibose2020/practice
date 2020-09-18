@@ -10,7 +10,6 @@ function resizeCanvas() {
 }
 
 // 入力値が数字か否かのチェック関数を作成。
-
 function inputDialog(WorH){
     var num=window.prompt(WorH+'を設定してください。')
     validateTypeofNum(num)
