@@ -2,19 +2,21 @@ function grid() {
     var canvas = document.getElementById('canvas');
     if (canvas.getContext) {
         var ctx = canvas.getContext('2d');
-        var W = canvas.width
-        var H = canvas.height
+        const CANVASWIDTH = canvas.width
+        const CANVASHEIGHT = canvas.height
+        let cellW = CANVASWIDTH / 10
+        let cellH = CANVASHEIGHT / 10
 
-        for (i = 0; i < W / (W / 10); i++) {
+        for (i = 0; i < CANVASHEIGHT / cellH; i++) {
             ctx.beginPath();
-            ctx.moveTo(0, (W / 10) * i)
-            ctx.lineTo(H, (W / 10) * i)
+            ctx.moveTo(0, cellH * i)
+            ctx.lineTo(CANVASWIDTH, cellH * i)
             ctx.stroke();
         }
-        for (j = 0; j < H / (H / 10); j++) {
+        for (j = 0; j < CANVASWIDTH / cellW; j++) {
             ctx.beginPath();
-            ctx.moveTo((H / 10) * j, 0)
-            ctx.lineTo((H / 10) * j, W)
+            ctx.moveTo(cellW * j, 0)
+            ctx.lineTo(cellW * j, CANVASHEIGHT)
             ctx.stroke();
         }
     }
