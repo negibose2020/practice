@@ -5,12 +5,12 @@ function DrawSquares(num = 10, len = 30) {
             clearInterval(this.intervalId);
             this.intervalId = null;
         } else {
-            console.log("The process hasn't started yet.");
+            console.log("This process hasn't started yet.");
         }
     };
     this.draw = () => {
         if (this.intervalId != null) {
-            console.log("Drawing!!");
+            console.log("This process is Drawing now!!");
             return;
         } else {
             this.intervalId = setInterval(makeManySquares, 500, num, len);
