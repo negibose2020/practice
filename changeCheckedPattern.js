@@ -10,7 +10,8 @@ function checkeredPattern() {
             [255, 255, 255, 255],
             [255, 0, 0, 255],
             [0, 128, 0, 255],
-            [0, 0, 255, 255]
+            [0, 0, 255, 255],
+            [0, 0, 0, 255],
         ]
 
         var isEven = true;
@@ -88,6 +89,9 @@ function colorId(arr) {
     if (arr[0] == 0 && arr[1] == 0 & arr[2] == 255 && arr[3] == 255) {
         color = "green"
     }
+    if (arr[0] == 0 && arr[1] == 0 & arr[2] == 0 && arr[3] == 255) {
+        color = "black"
+    }
     return color
 }
 
@@ -98,14 +102,16 @@ function decideColor(arr) {
         "red": 1,
         "blue": 2,
         "green": 3,
+        "black": 4,
     }
     var colobj = {
         0: "white",
         1: "red",
         2: "blue",
         3: "green",
+        4: "black",
     }
-    var num = (colToNum[color] + 2) % 4
+    var num = (colToNum[color] + 2) % 5
     return colobj[num]
 }
 
