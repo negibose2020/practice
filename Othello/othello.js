@@ -54,21 +54,7 @@ function setStone() {
     let player =Game.player
     let preWhiteNum=Game.white
     let preBlackNum=Game.black
-    // return putStone(x,y,player)
-    // let color = player
-    // console.log(Game)
-    // let reverseNum=0
-    // reverseNum+=countReverseNum1(x,y,player)
-    // reverseNum+=countReverseNum2(x,y,player)
-    // reverseNum+=countReverseNum3(x,y,player)
-    // reverseNum+=countReverseNum4(x,y,player)
-    // reverseNum+=countReverseNum6(x,y,player)
-    // reverseNum+=countReverseNum7(x,y,player)
-    // reverseNum+=countReverseNum8(x,y,player)
-    // reverseNum+=countReverseNum9(x,y,player)
-    // console.log(reverseNum)
     if (CanIsetStone(x,y)==true){
-        // if (reverseNum>0){
             putStone(x, y, player)
             
             CanReverse1(x,y,player)
@@ -82,8 +68,6 @@ function setStone() {
 
             let score=countStones()
 
-            Game.white=score[0]
-            Game.black=score[1]
             if (player=="white" && preWhiteNum+1==score[0]){
                 ctx.clearRect(2+x*40, 2+y*40, 36, 36)
                 cantReverse()
@@ -93,19 +77,16 @@ function setStone() {
                 cantReverse()
                 return 
             }else{
-            turnPlus()
-            console.log(Game)
+                Game.white=score[0]
+                Game.black=score[1]
+                turnPlus()
+                console.log(Game)
         }
     }else{
         cantSet()
         return null
     }
-    // reverseNum=0        
 }
-    // console.log(Game)
-            // console.log({ x, y })
-            // turnPlus()
-            // console.log(Game)
 
 function turnPlus(){
     Game.turn++
@@ -120,10 +101,8 @@ function reverseStone(x,y){
     const CANVAS = document.getElementById("canvas")
     const ctx = CANVAS.getContext("2d")
     let color =getCellInfomation(x,y)[2]
-    // console.log(color)
     let reversedColor=reverseColor(color)
 
-    // console.log(reversedColor)
     ctx.fillStyle = reversedColor
     ctx.beginPath()
     ctx.arc(20 + x * 40, 20 + y * 40, 16, 0, 2 * Math.PI, )
@@ -146,7 +125,6 @@ function getCellInfomation(x,y){
     let cellColorData=ctx.getImageData(20+x*40,20+y*40,1,1).data
     let color=getColor(cellColorData)
  
-    // console.log(x,y,color)
     return [x,y,color]
 }
 
@@ -199,7 +177,6 @@ function CanIsetStone(x,y){
     if (cellState=="green"){
         return true
     }else{
-        // window.alert("既に置かれています。")
         return false
     }
 }
@@ -229,26 +206,7 @@ function CanReverse2(x,y,color){
         }
     }
 }
-// function countReverseNum2(x,y,color){
-//     if (y==0 || y==1){
-//         return 0
-//     }else if(getCellInfomation(x,y-1)[2]=="green" 
-//                 || getCellInfomation(x,y-1)[2]==color){
-//         return 0
-//     }else{
-//         let changeCells=[[]]
-//         for (let i=1;i<=y;i++){
-//             if (color!=getCellInfomation(x,y-i)[2]){
-//                 let changeCell=[x,y-i]
-//                 changeCells.push(changeCell)
-//             }else if (changeCells.length>0 && color==getCellInfomation(x,y-i)[2]){
-//                 return changeCells.length
-//             }else{
-//                 break
-//             }
-//         }
-//     }
-// }
+
 
 
 
@@ -277,26 +235,7 @@ function CanReverse8(x,y,color){
     }
 }
 
-// function countReverseNum8(x,y,color){
-//     if (y==7 || y==6){
-//         return 0
-//     }else if(getCellInfomation(x,y+1)[2]=="green" 
-//                 || getCellInfomation(x,y+1)[2]==color){
-//         return 0
-//     }else{
-//         let changeCells=[[]]
-//         for (let i=1;i<=(7-y);i++){
-//             if (color!=getCellInfomation(x,y+i)[2]){
-//                 let changeCell=[x,y+i]
-//                 changeCells.push(changeCell)
-//             }else if (changeCells.length>0 && color==getCellInfomation(x,y+i)[2]){
-//                 return changeCells.length
-//             }else{
-//                 break
-//             }
-//         }
-//     }
-// }
+
 
 
 function CanReverse4(x,y,color){
@@ -324,26 +263,6 @@ function CanReverse4(x,y,color){
     }
 }
 
-// function countReverseNum4(x,y,color){
-//     if (x==0 || x==1){
-//         return 0
-//     }else if(getCellInfomation(x-1,y)[2]=="green" 
-//                 || getCellInfomation(x-1,y)[2]==color){
-//         return 0
-//     }else{
-//         let changeCells=[[]]
-//         for (let i=1;i<=x;i++){
-//             if (color!=getCellInfomation(x-i,y)[2]){
-//                 let changeCell=[x-i,y]
-//                 changeCells.push(changeCell)
-//             }else if (changeCells.length>0 && color==getCellInfomation(x-i,y)[2]){
-//                 return changeCells.length
-//             }else{
-//                 break
-//             }
-//         }
-//     }
-// }
 
 
 function CanReverse6(x,y,color){
@@ -371,26 +290,6 @@ function CanReverse6(x,y,color){
     }
 }
 
-// function countReverseNum6(x,y,color){
-//     if (x==7 || x==6){
-//         return 0
-//     }else if(getCellInfomation(x+1,y)[2]=="green" 
-//                 || getCellInfomation(x+1,y)[2]==color){
-//         return 0
-//     }else{
-//         let changeCells=[[]]
-//         for (let i=1;i<=(7-x);i++){
-//             if (color!=getCellInfomation(x+i,y)[2]){
-//                 let changeCell=[x+i,y]
-//                 changeCells.push(changeCell)
-//             }else if (changeCells.length>0 && color==getCellInfomation(x+i,y)[2]){
-//                 return changeCells.length
-//             }else{
-//                 break
-//             }
-//         }
-//     }
-// }
 
 
 function CanReverse9(x,y,color){
@@ -418,26 +317,6 @@ function CanReverse9(x,y,color){
     }
 }
 
-// function countReverseNum9(x,y,color){
-//     if (x==7 || x==6 || y==7 || y==6){
-//         return 0
-//     }else if(getCellInfomation(x+1,y+1)[2]=="green" 
-//                 || getCellInfomation(x+1,y+1)[2]==color){
-//         return 0
-//     }else{
-//         let changeCells=[[]]
-//         for (let i=1;i<=7;i++){
-//             if (color!=getCellInfomation(x+i,y+i)[2]){
-//                 let changeCell=[x+i,y+i]
-//                 changeCells.push(changeCell)
-//             }else if (changeCells.length>0 && color==getCellInfomation(x+i,y+i)[2]){
-//                 return changeCells.length
-//             }else{
-//                 break
-//             }
-//         }
-//     }
-// }
 
 
 
@@ -467,27 +346,6 @@ function CanReverse1(x,y,color){
     }
 }
 
-// function countReverseNum1(x,y,color){
-//     if (x==0 || x==1 || y==0 || y==1){
-//         return 0
-//     }else if(getCellInfomation(x-1,y-1)[2]=="green" 
-//                 || getCellInfomation(x-1,y-1)[2]==color){
-//         return 0
-//     }else{
-//         let changeCells=[[]]
-//         for (let i=1;i<=7;i++){
-//             if (color!=getCellInfomation(x-i,y-i)[2]){
-//                 let changeCell=[x-i,y-i]
-//                 changeCells.push(changeCell)
-//             }else if (changeCells.length>0 && color==getCellInfomation(x-i,y-i)[2]){
-//                 return changeCells.length
-//             }else{
-//                 break
-//             }
-//         }
-//     }
-// }
-
 
 
 function CanReverse3(x,y,color){
@@ -515,29 +373,6 @@ function CanReverse3(x,y,color){
     }
 }
 
-// function countReverseNum3(x,y,color){
-//     if (x==7 || x==6 || y==0 || y==1){
-//         return 0
-//     }else if(getCellInfomation(x+1,y-1)[2]=="green" 
-//                 || getCellInfomation(x+1,y-1)[2]==color){
-//         return 0
-//     }else{
-//         let changeCells=[[]]
-//         for (let i=1;i<=7;i++){
-//             if (color!=getCellInfomation(x+i,y-i)[2]){
-//                 let changeCell=[x+i,y-i]
-//                 changeCells.push(changeCell)
-//             }else if (changeCells.length>0 && color==getCellInfomation(x+i,y-i)[2]){
-//                 return changeCells.length
-//             }else{
-//                 break
-//             }
-//         }
-//     }
-// }
-
-
-
 function CanReverse7(x,y,color){
     if (x==0 || x==1 || y==7 || y==6){
         return null
@@ -562,25 +397,3 @@ function CanReverse7(x,y,color){
         }
     }
 }
-
-
-// function countReverseNum7(x,y,color){
-//     if (x==0 || x==1 || y==7 || y==6){
-//         return 0
-//     }else if(getCellInfomation(x-1,y+1)[2]=="green" 
-//                 || getCellInfomation(x-1,y+1)[2]==color){
-//         return 0
-//     }else{
-//         let changeCells=[[]]
-//         for (let i=1;i<=7;i++){
-//             if (color!=getCellInfomation(x-i,y+i)[2]){
-//                 let changeCell=[x-i,y+i]
-//                 changeCells.push(changeCell)
-//             }else if (changeCells.length>0 && color==getCellInfomation(x-i,y+i)[2]){
-//                 return changeCells.length
-//             }else{
-//                 break
-//             }
-//         }
-//     }
-// }
