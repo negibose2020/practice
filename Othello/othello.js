@@ -6,9 +6,35 @@ let Game = {
     white: 2,
     black: 2,
 };
-gameStart();
 
-// 盤面を一度クリアし、初期位置に石を置く。
+gameStart();
+HTMLdisplay()
+
+//HTMLにGame(object)を描画していく関数
+function HTMLdisplay(){
+    let displayPlayer=document.getElementById("player")
+    displayPlayer.innerText= "player: "+Game.player
+    let displayTurn=document.getElementById("turn")
+    displayTurn.innerText="turn: "+Game.turn
+    let displayWhiteStoneNum=document.getElementById("whiteStoneNum")
+    displayWhiteStoneNum.innerText="White: " +Game.white
+    let displayBlackStoneNum=document.getElementById("blackStoneNum")
+    displayBlackStoneNum.innerText="Black: " +Game.black
+    return    
+}
+
+// HTMLとJSのつなぎの関数
+function setStone() {
+    // document.getElementById("target").addEventListener("click", function(event){
+    const CANVAS = document.getElementById("canvas");
+    const ctx = CANVAS.getContext("2d");
+    let rect = event.target.getBoundingClientRect();
+    let x = Math.floor((event.clientX - rect.left) / 40);
+    let y = Math.floor((event.clientY - rect.top) / 40);
+    putStone(x, y);
+}
+
+// 盤面を一度クリアし、初期位置に石を置く関数
 function gameStart() {
     const CANVAS = document.getElementById("canvas");
     const ctx = CANVAS.getContext("2d");
@@ -38,7 +64,7 @@ function gameStart() {
     console.log(Game)
 }
 
-// 位置(x,y)にplayerのcolor("white" or "black")を描画する。
+// 位置(x,y)にplayerのcolor("white" or "black")を描画する関数
 function drawStone(x, y, color) {
     const CANVAS = document.getElementById("canvas");
     const ctx = CANVAS.getContext("2d");
@@ -48,17 +74,8 @@ function drawStone(x, y, color) {
     ctx.fill();
     ctx.closePath();
 }
-// HTMLとJSのつなぎの関数
-function setStone() {
-    // document.getElementById("target").addEventListener("click", function(event){
-    const CANVAS = document.getElementById("canvas");
-    const ctx = CANVAS.getContext("2d");
-    let rect = event.target.getBoundingClientRect();
-    let x = Math.floor((event.clientX - rect.left) / 40);
-    let y = Math.floor((event.clientY - rect.top) / 40);
-    putStone(x, y);
-}
 
+// 石をおいて、遊んでいく、メインの関数
 function putStone(x, y) {
     const CANVAS = document.getElementById("canvas");
     const ctx = CANVAS.getContext("2d");
@@ -90,17 +107,16 @@ function putStone(x, y) {
         } else {
             Game.white = score[0];
             Game.black = score[1];
-            // turnPlus(); //////////一度この行の場所を動かす
         }
     } else {
         cantSet();
         return null;
     }
-    return turnPlus() /////ここに動かした
-    return setTimeout(canISetSomewhere,700,Game.player)　///
+    displaySet(x,y)
+    return turnPlus()
 }
 
-// ターンを1つ進め、プレイヤーを入れ替える。
+// ターンを1つ進め、プレイヤーを入れ替える関数
 function turnPlus() {
     Game.turn++;
     if (Game.player === "white") {
@@ -108,11 +124,12 @@ function turnPlus() {
     } else {
         Game.player = "white";
     }
+    HTMLdisplay()
     console.log(Game)
     return setTimeout(canISetSomewhere,500,Game.player)　///
 }
 
-// 石を反転(白→黒 or 黒→白)させる。
+// 石を反転(白→黒 or 黒→白)させる関数
 function reverseStone(x, y) {
     const CANVAS = document.getElementById("canvas");
     const ctx = CANVAS.getContext("2d");
@@ -133,7 +150,7 @@ function reverseStone(x, y) {
     }
 }
 
-// 位置(x,y)の情報を取得する。
+// 位置(x,y)の情報を取得する関数
 function getCellInfomation(x, y) {
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("2d");
@@ -142,15 +159,18 @@ function getCellInfomation(x, y) {
     return [x, y, color]; //color: "green" or "white" or "black"
 }
 
-// 返せる石がなかった時にエラーを出す。
+// 返せる石がなかった時にエラーを出す関数
 function cantReverse() {
     window.alert("返せる石がありません。");
 }
-// 既に石が置かれているところに石を置こうとしたときにエラーを出す。
+
+// 既に石が置かれているところに石を置こうとしたときにエラーを出す関数
 function cantSet() {
     window.alert("既に置かれています。");
 }
-// 盤面の状況を数える。(戻り値は配列で[白の石数,黒の石数])
+
+// 盤面の状況を数える関数
+//      (戻り値は配列で[白の石数,黒の石数])
 function countStones() {
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("2d");
@@ -172,7 +192,7 @@ function countStones() {
     return [whiteNum, blackNum];
 }
 
-// セルの状態(色)を受け取り(data=[R,G,B,A])、色の単語(green" or "white" or "black")で返す。
+// セルの状態(色)を受け取り(data=[R,G,B,A])、色の単語(green" or "white" or "black")で返す関数
 function getColor(data) {
     let color;
     if (data[0] == 0 && data[1] == 0 && data[2] == 0 && data[3] == 0) {
@@ -187,7 +207,7 @@ function getColor(data) {
     return color;
 }
 
-// 置く位置(x,y)が既に埋まっていないかを確認する。
+// 置く位置(x,y)が既に埋まっていないかを確認する関数
 function CanIsetStone(x, y) {
     let cellState = getCellInfomation(x, y)[2];
     if (cellState == "green") {
@@ -197,7 +217,7 @@ function CanIsetStone(x, y) {
     }
 }
 
-// 以下8つは、置いた位置(x,y)で、石を反転させられるかを判定し実行する。
+// 以下8つは、置いた位置(x,y)で、石を反転させられるかを判定し実行する関数
 // (x,y)から左上を判定
 function CanReverse1(x, y, color, mode) {
     if (x == 0 || x == 1 || y == 0 || y == 1) {
@@ -485,6 +505,8 @@ function CanReverse9(x, y, color, mode) {
     }
 }
 
+// 置ける場所があるかを確認する関数。
+//  黒をNPCとして、ランダムな場所に設置するようにしている。
 function canISetSomewhere(player) {
         ICanSetStoneCells = [];
         for (let i = 0; i < 8; i++) {
@@ -515,10 +537,9 @@ function canISetSomewhere(player) {
         } else {
             noAnySet();
         }
-        // nooneCanSet();
 }
 
-
+// 置ける場所がない場合、アラートを出す関数。
 function noAnySet() {
     if (Game.white + Game.black >= 8*8 -1){
         if (Game.turn>=100){
@@ -535,6 +556,7 @@ function noAnySet() {
     }
 }
 
+// 白黒どちらも置く場所がない場合、アラートを出す関数
 function nooneCanSet() {
     if (Game.turn > 100) {
         window.alert("だれもどこにも置けません。");
@@ -584,3 +606,8 @@ function putStone2(x, y) {
     }
 }
 // }
+
+// 置いた場所をconsole.logで出力する関数。
+function displaySet(x,y){
+    console.log(Game.player,x,y)
+}
