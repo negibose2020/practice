@@ -6,8 +6,7 @@ let Game = {
     white: 2,
     black: 2,
 };
-gameStart()
-
+gameStart();
 
 // 盤面を一度クリアし、初期位置に石を置く。
 function gameStart() {
@@ -16,6 +15,7 @@ function gameStart() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "black";
     Game.player = "white";
+    Game.turn = 1;
     for (let i = 1; i < 8; i++) {
         ctx.beginPath();
         ctx.moveTo(40 * i, 0);
@@ -34,6 +34,8 @@ function gameStart() {
     drawStone(4, 3, "white");
     drawStone(3, 3, "black");
     drawStone(4, 4, "black");
+
+    console.log(Game)
 }
 
 // 位置(x,y)にplayerのcolor("white" or "black")を描画する。
@@ -46,7 +48,7 @@ function drawStone(x, y, color) {
     ctx.fill();
     ctx.closePath();
 }
-
+// HTMLとJSのつなぎの関数
 function setStone() {
     // document.getElementById("target").addEventListener("click", function(event){
     const CANVAS = document.getElementById("canvas");
@@ -54,34 +56,37 @@ function setStone() {
     let rect = event.target.getBoundingClientRect();
     let x = Math.floor((event.clientX - rect.left) / 40);
     let y = Math.floor((event.clientY - rect.top) / 40);
-    
-    
-    if (CanIsetStone(x, y) == true) {
-        let player = Game.player;
-        let preWhiteNum = Game.white;
-        let preBlackNum = Game.black;
+    putStone(x, y);
+}
 
+function putStone(x, y) {
+    const CANVAS = document.getElementById("canvas");
+    const ctx = CANVAS.getContext("2d");
+    let player = Game.player;
+    let preWhiteNum = Game.white;
+    let preBlackNum = Game.black;
+    if (CanIsetStone(x, y) == true) {
         drawStone(x, y, player);
 
-        CanReverse1(x, y, player);
-        CanReverse2(x, y, player);
-        CanReverse3(x, y, player);
-        CanReverse4(x, y, player);
-        CanReverse6(x, y, player);
-        CanReverse7(x, y, player);
-        CanReverse8(x, y, player);
-        CanReverse9(x, y, player);
+        CanReverse1(x, y, player, 1);
+        CanReverse2(x, y, player, 1);
+        CanReverse3(x, y, player, 1);
+        CanReverse4(x, y, player, 1);
+        CanReverse6(x, y, player, 1);
+        CanReverse7(x, y, player, 1);
+        CanReverse8(x, y, player, 1);
+        CanReverse9(x, y, player, 1);
 
         let score = countStones();
 
         if (player == "white" && preWhiteNum + 1 == score[0]) {
             ctx.clearRect(2 + x * 40, 2 + y * 40, 36, 36);
             cantReverse();
-            return;
+            return null;
         } else if (player == "black" && preBlackNum + 1 == score[1]) {
             ctx.clearRect(2 + x * 40, 2 + y * 40, 36, 36);
             cantReverse();
-            return;
+            return null;
         } else {
             Game.white = score[0];
             Game.black = score[1];
@@ -92,6 +97,7 @@ function setStone() {
         cantSet();
         return null;
     }
+    return setTimeout(canISetSomewhere,700)
 }
 
 // ターンを1つ進め、プレイヤーを入れ替える。
@@ -189,32 +195,41 @@ function CanIsetStone(x, y) {
     }
 }
 
-
 // 以下8つは、置いた位置(x,y)で、石を反転させられるかを判定し実行する。
 // (x,y)から左上を判定
-function CanReverse1(x, y, color) {
-    if (x == 0 || x == 1 || y == 0 || y == 1) {  // 判定する方向の端2つは返せる石はないため処理を抜ける。
+function CanReverse1(x, y, color, mode) {
+    if (x == 0 || x == 1 || y == 0 || y == 1) {
+        // 判定する方向の端2つは返せる石はないため処理を抜ける。
         return null;
-    } else if (  // 判定する方向を確認し、1つ先が空地("green") or 自分と同じ色なら返せる数は0なので処理を抜ける。
+    } else if (
+        // 判定する方向を確認し、1つ先が空地("green") or 自分と同じ色なら返せる数は0なので処理を抜ける。
         getCellInfomation(x - 1, y - 1)[2] == "green" ||
         getCellInfomation(x - 1, y - 1)[2] == color
     ) {
         return null;
-    } else {  // 上記以外で返せる条件を確認していく。
+    } else {
+        // 上記以外で返せる条件を確認していく。
         let changeCells = [[]];
         for (let i = 1; i <= 7; i++) {
-            if (color != getCellInfomation(x - i, y - i)[2]) {  // 自分と違う色の場合、確認した位置(x,y)=>(*1)を記録する。
+            if (color != getCellInfomation(x - i, y - i)[2]) {
+                // 自分と違う色の場合、確認した位置(x,y)=>(*1)を記録する。
                 let changeCell = [x - i, y - i];
                 changeCells.push(changeCell);
             } else if (
                 changeCells.length > 0 &&
                 color == getCellInfomation(x - i, y - i)[2]
-            ) {  // 確認を進めていって、自分と同じ色に場合、上記*1の位置の石を順次返していく。
-                for (let j = 1; j < changeCells.length; j++) {
-                    reverseStone(changeCells[j][0], changeCells[j][1]);
+            ) {
+                // 確認を進めていって、自分と同じ色に場合、上記*1の位置の石を順次返していく。
+                if (mode == 1) {
+                    for (let j = 1; j < changeCells.length; j++) {
+                        reverseStone(changeCells[j][0], changeCells[j][1]);
+                    }
+                    // console.log(changeCells)
+                    return;
+                } else {
+                    z=changeCells.slice(0,-1)
+                    return [x,y,z.length];
                 }
-                // console.log(changeCells)
-                return ;
             } else {
                 break;
             }
@@ -222,7 +237,7 @@ function CanReverse1(x, y, color) {
     }
 }
 // (x,y)から上を判定
-function CanReverse2(x, y, color) {
+function CanReverse2(x, y, color, mode) {
     if (y == 0 || y == 1) {
         return null;
     } else if (
@@ -240,19 +255,24 @@ function CanReverse2(x, y, color) {
                 changeCells.length > 0 &&
                 color == getCellInfomation(x, y - i)[2]
             ) {
-                for (let j = 1; j < changeCells.length; j++) {
-                    reverseStone(changeCells[j][0], changeCells[j][1]);
-                }
-                // console.log(changeCells)
-                return;
+                if (mode == 1) {
+                    for (let j = 1; j < changeCells.length; j++) {
+                        reverseStone(changeCells[j][0], changeCells[j][1]);
+                    }
+                    // console.log(changeCells)
+                    return;
+                } else {
+                    z=changeCells.slice(0,-1)
+                    return [x,y,z.length];                }
             } else {
                 break;
             }
         }
     }
 }
+
 // (x,y)から右上を判定
-function CanReverse3(x, y, color) {
+function CanReverse3(x, y, color, mode) {
     if (x == 7 || x == 6 || y == 0 || y == 1) {
         return null;
     } else if (
@@ -270,19 +290,24 @@ function CanReverse3(x, y, color) {
                 changeCells.length > 0 &&
                 color == getCellInfomation(x + i, y - i)[2]
             ) {
-                for (let j = 1; j < changeCells.length; j++) {
-                    reverseStone(changeCells[j][0], changeCells[j][1]);
-                }
-                // console.log(changeCells)
-                return;
+                if (mode == 1) {
+                    for (let j = 1; j < changeCells.length; j++) {
+                        reverseStone(changeCells[j][0], changeCells[j][1]);
+                    }
+                    // console.log(changeCells)
+                    return;
+                } else {
+                    z=changeCells.slice(0,-1)
+                    return [x,y,z.length];                }
             } else {
                 break;
             }
         }
     }
 }
+
 // (x,y)から左を判定
-function CanReverse4(x, y, color) {
+function CanReverse4(x, y, color, mode) {
     if (x == 0 || x == 1) {
         return null;
     } else if (
@@ -300,19 +325,24 @@ function CanReverse4(x, y, color) {
                 changeCells.length > 0 &&
                 color == getCellInfomation(x - i, y)[2]
             ) {
-                for (let j = 1; j < changeCells.length; j++) {
-                    reverseStone(changeCells[j][0], changeCells[j][1]);
-                }
-                // console.log(changeCells)
-                return;
+                if (mode == 1) {
+                    for (let j = 1; j < changeCells.length; j++) {
+                        reverseStone(changeCells[j][0], changeCells[j][1]);
+                    }
+                    // console.log(changeCells)
+                    return;
+                } else {
+                    z=changeCells.slice(0,-1)
+                    return [x,y,z.length];                }
             } else {
                 break;
             }
         }
     }
 }
+
 // (x,y)から右を判定
-function CanReverse6(x, y, color) {
+function CanReverse6(x, y, color, mode) {
     if (x == 7 || x == 6) {
         return null;
     } else if (
@@ -330,19 +360,24 @@ function CanReverse6(x, y, color) {
                 changeCells.length > 0 &&
                 color == getCellInfomation(x + i, y)[2]
             ) {
-                for (let j = 1; j < changeCells.length; j++) {
-                    reverseStone(changeCells[j][0], changeCells[j][1]);
-                }
-                // console.log(changeCells)
-                return ;
+                if (mode == 1) {
+                    for (let j = 1; j < changeCells.length; j++) {
+                        reverseStone(changeCells[j][0], changeCells[j][1]);
+                    }
+                    // console.log(changeCells)
+                    return;
+                } else {
+                    z=changeCells.slice(0,-1)
+                    return [x,y,z.length];                }
             } else {
                 break;
             }
         }
     }
 }
+
 // (x,y)から左下を判定
-function CanReverse7(x, y, color) {
+function CanReverse7(x, y, color, mode) {
     if (x == 0 || x == 1 || y == 7 || y == 6) {
         return null;
     } else if (
@@ -360,19 +395,24 @@ function CanReverse7(x, y, color) {
                 changeCells.length > 0 &&
                 color == getCellInfomation(x - i, y + i)[2]
             ) {
-                for (let j = 1; j < changeCells.length; j++) {
-                    reverseStone(changeCells[j][0], changeCells[j][1]);
-                }
-                // console.log(changeCells)
-                return ;
+                if (mode == 1) {
+                    for (let j = 1; j < changeCells.length; j++) {
+                        reverseStone(changeCells[j][0], changeCells[j][1]);
+                    }
+                    // console.log(changeCells)
+                    return;
+                } else {
+                    z=changeCells.slice(0,-1)
+                    return [x,y,z.length];                }
             } else {
                 break;
             }
         }
     }
 }
+
 // (x,y)から下を判定
-function CanReverse8(x, y, color) {
+function CanReverse8(x, y, color, mode) {
     if (y == 7 || y == 6) {
         return null;
     } else if (
@@ -390,19 +430,24 @@ function CanReverse8(x, y, color) {
                 changeCells.length > 0 &&
                 color == getCellInfomation(x, y + i)[2]
             ) {
-                for (let j = 1; j < changeCells.length; j++) {
-                    reverseStone(changeCells[j][0], changeCells[j][1]);
-                }
-                // console.log(changeCells)
-                return ;
+                if (mode == 1) {
+                    for (let j = 1; j < changeCells.length; j++) {
+                        reverseStone(changeCells[j][0], changeCells[j][1]);
+                    }
+                    // console.log(changeCells)
+                    return;
+                } else {
+                    z=changeCells.slice(0,-1)
+                    return [x,y,z.length];                }
             } else {
                 break;
             }
         }
     }
 }
+
 // (x,y)から右下を判定
-function CanReverse9(x, y, color) {
+function CanReverse9(x, y, color, mode) {
     if (x == 7 || x == 6 || y == 7 || y == 6) {
         return null;
     } else if (
@@ -420,11 +465,15 @@ function CanReverse9(x, y, color) {
                 changeCells.length > 0 &&
                 color == getCellInfomation(x + i, y + i)[2]
             ) {
-                for (let j = 1; j < changeCells.length; j++) {
-                    reverseStone(changeCells[j][0], changeCells[j][1]);
-                }
-                // console.log(changeCells)
-                return;
+                if (mode == 1) {
+                    for (let j = 1; j < changeCells.length; j++) {
+                        reverseStone(changeCells[j][0], changeCells[j][1]);
+                    }
+                    // console.log(changeCells)
+                    return;
+                } else {
+                    z=changeCells.slice(0,-1)
+                    return [x,y,z.length];                }
             } else {
                 break;
             }
@@ -432,11 +481,95 @@ function CanReverse9(x, y, color) {
     }
 }
 
-// function canIsetanywhere(){
-//     canIanyset=false
-//     for (let i=0;i<8;i++){
-//         for (let j=0;j<8;j++){
-            
-//             }
-//         }
-//     }
+function canISetSomewhere() {
+    if (Game.player == "black") {
+        ICanSetStoneCells = [];
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                // console.log(i, j);
+                let xyz = putStone2(i, j)
+                if (xyz != null) {
+                    // console.log(xyz)
+                    ICanSetStoneCells.push(xyz)
+                } else {
+                    //pass
+                }
+            }
+        }
+        // console.log(ICanSetStoneCells)
+        if (ICanSetStoneCells.length > 0) {
+            // console.log (ICanSetStoneCells)
+            let num = (Math.floor(Math.random() * 10))% (ICanSetStoneCells.length)
+            let x = ICanSetStoneCells[num][0][0]
+            let y = ICanSetStoneCells[num][0][1]
+            console.log(num,x,y)
+            putStone(x, y)
+        } else {
+            noAnySet();
+        }
+        // nooneCanSet();
+    }else{
+        //pass
+    }
+}
+
+
+function noAnySet() {
+    if (Game.white + Game.black >= 8*8 -1){
+        //pass
+    }else{
+        window.alert("置く場所がありません。");
+        window.alert("ターンを進めます。");
+        turnPlus()
+    }
+}
+
+function nooneCanSet() {
+    if (Game.turn > 100) {
+        window.alert("だれもどこにも置けません。");
+        return null;
+    } else {
+        return null;
+    }
+}
+
+// 置ける箇所があるかの判定用にputStone関数を改造
+function putStone2(x, y) {
+    const CANVAS = document.getElementById("canvas");
+    const ctx = CANVAS.getContext("2d");
+    let player = Game.player;
+    // let preWhiteNum = Game.white;
+    // let preBlackNum = Game.black;
+    let ICanSetStoneCells = []
+    if (CanIsetStone(x, y) == true) {
+
+        ICanSetStoneCells.push(CanReverse1(x, y, player, 2));
+        ICanSetStoneCells.push(CanReverse2(x, y, player, 2));
+        ICanSetStoneCells.push(CanReverse3(x, y, player, 2));
+        ICanSetStoneCells.push(CanReverse4(x, y, player, 2));
+        ICanSetStoneCells.push(CanReverse6(x, y, player, 2));
+        ICanSetStoneCells.push(CanReverse7(x, y, player, 2));
+        ICanSetStoneCells.push(CanReverse8(x, y, player, 2));
+        ICanSetStoneCells.push(CanReverse9(x, y, player, 2));
+
+    } else {
+        //pass
+    }
+    // console.log(ICanSetStoneCells)
+    let resArry = []
+    for (i = 0; i < ICanSetStoneCells.length; i++) {
+        if (ICanSetStoneCells[i] != null) { //&& ICanSetStoneCells[i]!=0 ){
+            resArry.push(ICanSetStoneCells[i])
+        } else {
+            // pass
+        }
+    }
+    if (resArry.length != 0) {
+        // console.log(resArry)
+        return resArry
+    } else {
+        // console.log("hage")
+        return
+    }
+}
+// }
