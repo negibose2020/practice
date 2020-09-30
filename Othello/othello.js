@@ -20,11 +20,13 @@ function HTMLdisplay(){
     displayWhiteStoneNum.innerText="White: " +Game.white
     let displayBlackStoneNum=document.getElementById("blackStoneNum")
     displayBlackStoneNum.innerText="Black: " +Game.black
+    console.log("HTMLdisplay()")
     return    
 }
 
 // HTMLとJSのつなぎの関数
 function setStone() {
+    // console.log("setStone()")
     // document.getElementById("target").addEventListener("click", function(event){
     const CANVAS = document.getElementById("canvas");
     const ctx = CANVAS.getContext("2d");
@@ -36,6 +38,7 @@ function setStone() {
 
 // 盤面を一度クリアし、初期位置に石を置く関数
 function gameStart() {
+    // console.log("gameStart()")
     const CANVAS = document.getElementById("canvas");
     const ctx = CANVAS.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -66,6 +69,7 @@ function gameStart() {
 
 // 位置(x,y)にplayerのcolor("white" or "black")を描画する関数
 function drawStone(x, y, color) {
+    // console.log("drawStone(x, y, color)",x,y,color)
     const CANVAS = document.getElementById("canvas");
     const ctx = CANVAS.getContext("2d");
     ctx.fillStyle = color;
@@ -77,6 +81,7 @@ function drawStone(x, y, color) {
 
 // 石をおいて、遊んでいく、メインの関数
 function putStone(x, y) {
+    // console.log("putStone(x,y)",x,y)
     const CANVAS = document.getElementById("canvas");
     const ctx = CANVAS.getContext("2d");
     let player = Game.player;
@@ -118,6 +123,7 @@ function putStone(x, y) {
 
 // ターンを1つ進め、プレイヤーを入れ替える関数
 function turnPlus() {
+    // console.log("turnPlus()")
     Game.turn++;
     if (Game.player === "white") {
         Game.player = "black";
@@ -126,11 +132,12 @@ function turnPlus() {
     }
     HTMLdisplay()
     console.log(Game)
-    return setTimeout(canISetSomewhere,500,Game.player)　///
+    return setTimeout(canISetSomewhere,500,Game.player)
 }
 
 // 石を反転(白→黒 or 黒→白)させる関数
 function reverseStone(x, y) {
+    console.log("reveseStone(x,y)",x,y)
     const CANVAS = document.getElementById("canvas");
     const ctx = CANVAS.getContext("2d");
     let color = getCellInfomation(x, y)[2];
@@ -152,6 +159,7 @@ function reverseStone(x, y) {
 
 // 位置(x,y)の情報を取得する関数
 function getCellInfomation(x, y) {
+    // console.log("getCellInfomation(x, y)",x,y)
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("2d");
     let cellColorData = ctx.getImageData(20 + x * 40, 20 + y * 40, 1, 1).data;
@@ -161,17 +169,20 @@ function getCellInfomation(x, y) {
 
 // 返せる石がなかった時にエラーを出す関数
 function cantReverse() {
+    // console.log("cantReverse()")
     window.alert("返せる石がありません。");
 }
 
 // 既に石が置かれているところに石を置こうとしたときにエラーを出す関数
 function cantSet() {
+    // console.log("cantSet()")
     window.alert("既に置かれています。");
 }
 
 // 盤面の状況を数える関数
 //      (戻り値は配列で[白の石数,黒の石数])
 function countStones() {
+    // console.log("countStones()")
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("2d");
     let whiteNum = 0;
@@ -194,6 +205,7 @@ function countStones() {
 
 // セルの状態(色)を受け取り(data=[R,G,B,A])、色の単語(green" or "white" or "black")で返す関数
 function getColor(data) {
+    // console.log("getColor(data)",color)
     let color;
     if (data[0] == 0 && data[1] == 0 && data[2] == 0 && data[3] == 0) {
         color = "green";
@@ -204,17 +216,29 @@ function getColor(data) {
     if (data[0] == 0 && data[1] == 0 && data[2] == 0 && data[3] == 255) {
         color = "black";
     }
+    // console.log(color)
     return color;
 }
 
 // 置く位置(x,y)が既に埋まっていないかを確認する関数
 function CanIsetStone(x, y) {
+    // console.log("CanIsetStone(x, y)",x,y)
     let cellState = getCellInfomation(x, y)[2];
     if (cellState == "green") {
         return true;
     } else {
         return false;
     }
+}
+
+function oppositionColor(color){
+    let oppColor
+    if (color=="white"){
+        oppColor="black"
+    }else{
+        oppColor="white"
+    }
+    return oppColor
 }
 
 // 以下8つは、置いた位置(x,y)で、石を反転させられるかを判定し実行する関数
@@ -231,10 +255,11 @@ function CanReverse1(x, y, color, mode) {
         return null;
     } else {
         // 上記以外で返せる条件を確認していく。
-        let changeCells = [[]];
+        let oppColor=oppositionColor(color)
+        let changeCells = [];
         // let num = Math.min(x,y)
         for (let i = 1; i <= 8; i++) {
-            if (color != getCellInfomation(x - i, y - i)[2]) {
+            if (oppColor == getCellInfomation(x - i, y - i)[2]) {
                 // 自分と違う色の場合、確認した位置(x,y)=>(*1)を記録する。
                 let changeCell = [x - i, y - i];
                 changeCells.push(changeCell);
@@ -244,18 +269,18 @@ function CanReverse1(x, y, color, mode) {
             ) {
                 // 確認を進めていって、自分と同じ色に場合、上記*1の位置の石を順次返していく。
                 if (mode == 1) {
-                    console.log(changeCells) /////////////////////////////////////////
-                    for (let j = 1; j < changeCells.length; j++) {
+                    // console.log(changeCells) ////
+                    for (let j = 0; j < changeCells.length; j++) {
                         reverseStone(changeCells[j][0], changeCells[j][1]);
                     }
                     // console.log(changeCells)
                     return;
                 } else {
-                    z=changeCells.slice(0,-1)
+                    z=changeCells
                     return [x,y,z.length];
                 }
             } else {
-                break;
+                return;
             }
         }
     }
@@ -270,9 +295,10 @@ function CanReverse2(x, y, color, mode) {
     ) {
         return null;
     } else {
-        let changeCells = [[]];
+        let oppColor=oppositionColor(color)
+        let changeCells = [];
         for (let i = 1; i <= y; i++) {
-            if (color != getCellInfomation(x, y - i)[2]) {
+            if (oppColor== getCellInfomation(x, y - i)[2] ) {
                 let changeCell = [x, y - i];
                 changeCells.push(changeCell);
             } else if (
@@ -280,16 +306,16 @@ function CanReverse2(x, y, color, mode) {
                 color == getCellInfomation(x, y - i)[2]
             ) {
                 if (mode == 1) {
-                    for (let j = 1; j < changeCells.length; j++) {
+                    for (let j = 0; j < changeCells.length; j++) {
                         reverseStone(changeCells[j][0], changeCells[j][1]);
                     }
                     // console.log(changeCells)
                     return;
                 } else {
-                    z=changeCells.slice(0,-1)
+                    z=changeCells
                     return [x,y,z.length];                }
             } else {
-                break;
+                return;
             }
         }
     }
@@ -305,9 +331,10 @@ function CanReverse3(x, y, color, mode) {
     ) {
         return null;
     } else {
-        let changeCells = [[]];
+        let oppColor=oppositionColor(color)
+        let changeCells = [];
         for (let i = 1; i <= 8; i++) {
-            if (color != getCellInfomation(x + i, y - i)[2]) {
+            if (oppColor== getCellInfomation(x + i, y - i)[2] ) {
                 let changeCell = [x + i, y - i];
                 changeCells.push(changeCell);
             } else if (
@@ -315,16 +342,16 @@ function CanReverse3(x, y, color, mode) {
                 color == getCellInfomation(x + i, y - i)[2]
             ) {
                 if (mode == 1) {
-                    for (let j = 1; j < changeCells.length; j++) {
+                    for (let j = 0; j < changeCells.length; j++) {
                         reverseStone(changeCells[j][0], changeCells[j][1]);
                     }
                     // console.log(changeCells)
                     return;
                 } else {
-                    z=changeCells.slice(0,-1)
+                    z=changeCells
                     return [x,y,z.length];                }
             } else {
-                break;
+                return;
             }
         }
     }
@@ -340,9 +367,10 @@ function CanReverse4(x, y, color, mode) {
     ) {
         return null;
     } else {
-        let changeCells = [[]];
+        let oppColor=oppositionColor(color)
+        let changeCells = [];
         for (let i = 1; i <= x; i++) {
-            if (color != getCellInfomation(x - i, y)[2]) {
+            if (oppColor== getCellInfomation(x - i, y)[2] ) {
                 let changeCell = [x - i, y];
                 changeCells.push(changeCell);
             } else if (
@@ -350,16 +378,16 @@ function CanReverse4(x, y, color, mode) {
                 color == getCellInfomation(x - i, y)[2]
             ) {
                 if (mode == 1) {
-                    for (let j = 1; j < changeCells.length; j++) {
+                    for (let j = 0; j < changeCells.length; j++) {
                         reverseStone(changeCells[j][0], changeCells[j][1]);
                     }
                     // console.log(changeCells)
                     return;
                 } else {
-                    z=changeCells.slice(0,-1)
+                    z=changeCells
                     return [x,y,z.length];                }
             } else {
-                break;
+                return;
             }
         }
     }
@@ -375,9 +403,10 @@ function CanReverse6(x, y, color, mode) {
     ) {
         return null;
     } else {
-        let changeCells = [[]];
+        let oppColor=oppositionColor(color)
+        let changeCells = [];
         for (let i = 1; i <= 8 - x; i++) {
-            if (color != getCellInfomation(x + i, y)[2]) {
+            if (oppColor == getCellInfomation(x + i, y)[2] ) {
                 let changeCell = [x + i, y];
                 changeCells.push(changeCell);
             } else if (
@@ -385,16 +414,16 @@ function CanReverse6(x, y, color, mode) {
                 color == getCellInfomation(x + i, y)[2]
             ) {
                 if (mode == 1) {
-                    for (let j = 1; j < changeCells.length; j++) {
+                    for (let j = 0; j < changeCells.length; j++) {
                         reverseStone(changeCells[j][0], changeCells[j][1]);
                     }
                     // console.log(changeCells)
                     return;
                 } else {
-                    z=changeCells.slice(0,-1)
+                    z=changeCells
                     return [x,y,z.length];                }
             } else {
-                break;
+                return;
             }
         }
     }
@@ -410,9 +439,10 @@ function CanReverse7(x, y, color, mode) {
     ) {
         return null;
     } else {
-        let changeCells = [[]];
+        let oppColor=oppositionColor(color)
+        let changeCells = [];
         for (let i = 1; i <= 8; i++) {
-            if (color != getCellInfomation(x - i, y + i)[2]) {
+            if (oppColor== getCellInfomation(x - i, y + i)[2] ) {
                 let changeCell = [x - i, y + i];
                 changeCells.push(changeCell);
             } else if (
@@ -420,16 +450,16 @@ function CanReverse7(x, y, color, mode) {
                 color == getCellInfomation(x - i, y + i)[2]
             ) {
                 if (mode == 1) {
-                    for (let j = 1; j < changeCells.length; j++) {
+                    for (let j = 0; j < changeCells.length; j++) {
                         reverseStone(changeCells[j][0], changeCells[j][1]);
                     }
                     // console.log(changeCells)
                     return;
                 } else {
-                    z=changeCells.slice(0,-1)
+                    z=changeCells
                     return [x,y,z.length];                }
             } else {
-                break;
+                return;
             }
         }
     }
@@ -445,9 +475,10 @@ function CanReverse8(x, y, color, mode) {
     ) {
         return null;
     } else {
-        let changeCells = [[]];
+        let oppColor=oppositionColor(color)
+        let changeCells = [];
         for (let i = 1; i <= 8 - y; i++) {
-            if (color != getCellInfomation(x, y + i)[2]) {
+            if (oppColor== getCellInfomation(x, y + i)[2] ) {
                 let changeCell = [x, y + i];
                 changeCells.push(changeCell);
             } else if (
@@ -455,16 +486,16 @@ function CanReverse8(x, y, color, mode) {
                 color == getCellInfomation(x, y + i)[2]
             ) {
                 if (mode == 1) {
-                    for (let j = 1; j < changeCells.length; j++) {
+                    for (let j = 0; j < changeCells.length; j++) {
                         reverseStone(changeCells[j][0], changeCells[j][1]);
                     }
                     // console.log(changeCells)
                     return;
                 } else {
-                    z=changeCells.slice(0,-1)
+                    z=changeCells
                     return [x,y,z.length];                }
             } else {
-                break;
+                return;
             }
         }
     }
@@ -480,9 +511,10 @@ function CanReverse9(x, y, color, mode) {
     ) {
         return null;
     } else {
-        let changeCells = [[]];
+        let oppColor=oppositionColor(color)
+        let changeCells = [];
         for (let i = 1; i <= 8; i++) {
-            if (color != getCellInfomation(x + i, y + i)[2]) {
+            if (oppColor== getCellInfomation(x + i, y + i)[2]) {
                 let changeCell = [x + i, y + i];
                 changeCells.push(changeCell);
             } else if (
@@ -490,16 +522,16 @@ function CanReverse9(x, y, color, mode) {
                 color == getCellInfomation(x + i, y + i)[2]
             ) {
                 if (mode == 1) {
-                    for (let j = 1; j < changeCells.length; j++) {
+                    for (let j = 0; j < changeCells.length; j++) {
                         reverseStone(changeCells[j][0], changeCells[j][1]);
                     }
                     // console.log(changeCells)
                     return;
                 } else {
-                    z=changeCells.slice(0,-1)
+                    z=changeCells
                     return [x,y,z.length];                }
             } else {
-                break;
+                return;
             }
         }
     }
@@ -508,6 +540,7 @@ function CanReverse9(x, y, color, mode) {
 // 置ける場所があるかを確認する関数。
 //  黒をNPCとして、ランダムな場所に設置するようにしている。
 function canISetSomewhere(player) {
+    // console.log("canISetSomewhere(player)",player)
         ICanSetStoneCells = [];
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
@@ -541,6 +574,7 @@ function canISetSomewhere(player) {
 
 // 置ける場所がない場合、アラートを出す関数。
 function noAnySet() {
+    // console.log("noAnySet()")
     if (Game.white + Game.black >= 8*8 -1){
         if (Game.turn>=100){
             window.alert("だれもどこにも置けません。")
@@ -556,18 +590,9 @@ function noAnySet() {
     }
 }
 
-// 白黒どちらも置く場所がない場合、アラートを出す関数
-function nooneCanSet() {
-    if (Game.turn > 100) {
-        window.alert("だれもどこにも置けません。");
-        return null;
-    } else {
-        return null;
-    }
-}
-
 // 置ける箇所があるかの判定用にputStone関数を改造
 function putStone2(x, y) {
+    // console.log("putStone2(x, y)",x,y)
     const CANVAS = document.getElementById("canvas");
     const ctx = CANVAS.getContext("2d");
     let player = Game.player;
@@ -609,5 +634,6 @@ function putStone2(x, y) {
 
 // 置いた場所をconsole.logで出力する関数。
 function displaySet(x,y){
+    // console.log("displaySet(x,y)",x,y)
     console.log(Game.player,x,y)
 }
