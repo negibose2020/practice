@@ -90,14 +90,14 @@ function putStone(x, y) {
         } else {
             Game.white = score[0];
             Game.black = score[1];
-            turnPlus();
-            console.log(Game);
+            // turnPlus(); //////////一度この行の場所を動かす
         }
     } else {
         cantSet();
         return null;
     }
-    return setTimeout(canISetSomewhere,700)
+    return turnPlus() /////ここに動かした
+    return setTimeout(canISetSomewhere,700,Game.player)　///
 }
 
 // ターンを1つ進め、プレイヤーを入れ替える。
@@ -108,6 +108,8 @@ function turnPlus() {
     } else {
         Game.player = "white";
     }
+    console.log(Game)
+    return setTimeout(canISetSomewhere,500,Game.player)　///
 }
 
 // 石を反転(白→黒 or 黒→白)させる。
@@ -210,7 +212,8 @@ function CanReverse1(x, y, color, mode) {
     } else {
         // 上記以外で返せる条件を確認していく。
         let changeCells = [[]];
-        for (let i = 1; i <= 7; i++) {
+        // let num = Math.min(x,y)
+        for (let i = 1; i <= 8; i++) {
             if (color != getCellInfomation(x - i, y - i)[2]) {
                 // 自分と違う色の場合、確認した位置(x,y)=>(*1)を記録する。
                 let changeCell = [x - i, y - i];
@@ -221,6 +224,7 @@ function CanReverse1(x, y, color, mode) {
             ) {
                 // 確認を進めていって、自分と同じ色に場合、上記*1の位置の石を順次返していく。
                 if (mode == 1) {
+                    console.log(changeCells) /////////////////////////////////////////
                     for (let j = 1; j < changeCells.length; j++) {
                         reverseStone(changeCells[j][0], changeCells[j][1]);
                     }
@@ -282,7 +286,7 @@ function CanReverse3(x, y, color, mode) {
         return null;
     } else {
         let changeCells = [[]];
-        for (let i = 1; i <= 7; i++) {
+        for (let i = 1; i <= 8; i++) {
             if (color != getCellInfomation(x + i, y - i)[2]) {
                 let changeCell = [x + i, y - i];
                 changeCells.push(changeCell);
@@ -352,7 +356,7 @@ function CanReverse6(x, y, color, mode) {
         return null;
     } else {
         let changeCells = [[]];
-        for (let i = 1; i <= 7 - x; i++) {
+        for (let i = 1; i <= 8 - x; i++) {
             if (color != getCellInfomation(x + i, y)[2]) {
                 let changeCell = [x + i, y];
                 changeCells.push(changeCell);
@@ -387,7 +391,7 @@ function CanReverse7(x, y, color, mode) {
         return null;
     } else {
         let changeCells = [[]];
-        for (let i = 1; i <= 7; i++) {
+        for (let i = 1; i <= 8; i++) {
             if (color != getCellInfomation(x - i, y + i)[2]) {
                 let changeCell = [x - i, y + i];
                 changeCells.push(changeCell);
@@ -422,7 +426,7 @@ function CanReverse8(x, y, color, mode) {
         return null;
     } else {
         let changeCells = [[]];
-        for (let i = 1; i <= 7 - y; i++) {
+        for (let i = 1; i <= 8 - y; i++) {
             if (color != getCellInfomation(x, y + i)[2]) {
                 let changeCell = [x, y + i];
                 changeCells.push(changeCell);
@@ -457,7 +461,7 @@ function CanReverse9(x, y, color, mode) {
         return null;
     } else {
         let changeCells = [[]];
-        for (let i = 1; i <= 7; i++) {
+        for (let i = 1; i <= 8; i++) {
             if (color != getCellInfomation(x + i, y + i)[2]) {
                 let changeCell = [x + i, y + i];
                 changeCells.push(changeCell);
@@ -481,8 +485,7 @@ function CanReverse9(x, y, color, mode) {
     }
 }
 
-function canISetSomewhere() {
-    if (Game.player == "black") {
+function canISetSomewhere(player) {
         ICanSetStoneCells = [];
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
@@ -502,21 +505,29 @@ function canISetSomewhere() {
             let num = (Math.floor(Math.random() * 10))% (ICanSetStoneCells.length)
             let x = ICanSetStoneCells[num][0][0]
             let y = ICanSetStoneCells[num][0][1]
-            console.log(num,x,y)
-            putStone(x, y)
+            // console.log(num,x,y)
+            
+            if (player == "black") {            
+                putStone(x, y)
+            }else{
+                //pass
+            }
         } else {
             noAnySet();
         }
         // nooneCanSet();
-    }else{
-        //pass
-    }
 }
 
 
 function noAnySet() {
     if (Game.white + Game.black >= 8*8 -1){
-        //pass
+        if (Game.turn>=100){
+            window.alert("だれもどこにも置けません。")
+            console.log(Game)
+            return
+        }else{
+            //pass
+        }
     }else{
         window.alert("置く場所がありません。");
         window.alert("ターンを進めます。");
