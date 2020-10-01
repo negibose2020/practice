@@ -1,11 +1,3 @@
-//　リファクタリングにあたっての指針をメモ
-//　主体となるのはWindowか？盤面それ自体か？プレイヤーか？
-//　基本的にはWindow(盤面)として考える。プレイヤーが起点になる場合は、主語を明記する。
-//　functionの命名規則は基本動詞　目的語　VO　( (Window) display HTML)
-//　プレイヤーが主体となるときはそれを明示する。
-//　Boolは疑問形として、TrueがYesになるように書く。
-//　変数にofを使わないで書く。
-
 const E = document
     .getElementById("canvas")
     .addEventListener("click", userClickMouse);
@@ -85,9 +77,8 @@ function putStone(x, y) {
         determineToReverse8(x, y, player, 1);
         determineToReverse9(x, y, player, 1);
 
-        //ここから別関数に置き換えるべきか
+        //盤面に影響を与えない場所に置いた場合、置いた石を消す。
         let score = countStones();
-
         if (player == "white" && preWhiteNum + 1 == score[0]) {
             ctx.clearRect(2 + x * 40, 2 + y * 40, 36, 36);
             playerCantReverseStoneAlert();
@@ -96,13 +87,13 @@ function putStone(x, y) {
             ctx.clearRect(2 + x * 40, 2 + y * 40, 36, 36);
             playerCantReverseStoneAlert();
             return;
-            //ここまで
+            
         } else {
             Game.white = score[0];
             Game.black = score[1];
         }
     } else {
-        playerCantSetStoneAlert()();
+        playerCantSetStoneAlert();
         return;
     }
     displayMove(x, y);
@@ -637,7 +628,6 @@ function playerCantSetAnywhere() {
         }
     }
 }
-
 
 // オセロの盤面を描画する関数
 function drawBoardSurface() {
