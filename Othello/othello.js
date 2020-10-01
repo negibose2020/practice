@@ -21,18 +21,16 @@ function HTMLdisplay(){
     let displayBlackStoneNum=document.getElementById("blackStoneNum")
     displayBlackStoneNum.innerText="Black: " +Game.black
     console.log("HTMLdisplay()")
-    return    
+    return
 }
 
 // HTMLとJSのつなぎの関数
 function setStone() {
-    // console.log("setStone()")
-    // document.getElementById("target").addEventListener("click", function(event){
     const CANVAS = document.getElementById("canvas");
-    const ctx = CANVAS.getContext("2d");
-    let rect = event.target.getBoundingClientRect();
-    let x = Math.floor((event.clientX - rect.left) / 40);
-    let y = Math.floor((event.clientY - rect.top) / 40);
+    // const ctx = CANVAS.getContext("2d");
+    let rect = CANVAS.getBoundingClientRect();
+    let x = Math.floor((clientX - rect.left) / 40);
+    let y = Math.floor((clientY - rect.top) / 40);
     putStone(x, y);
 }
 
@@ -630,7 +628,6 @@ function putStone2(x, y) {
         return
     }
 }
-// }
 
 // 置いた場所をconsole.logで出力する関数。
 function displaySet(x,y){
