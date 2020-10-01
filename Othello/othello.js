@@ -1,4 +1,4 @@
-const E = document.getElementById("target").addEventListener("click", setStone);
+const E = document.getElementById("canvas").addEventListener("click", setStone);
 
 let Game = {
     player: "white",
@@ -29,8 +29,8 @@ function setStone() {
     const CANVAS = document.getElementById("canvas");
     // const ctx = CANVAS.getContext("2d");
     let rect = CANVAS.getBoundingClientRect();
-    let x = Math.floor((clientX - rect.left) / 40);
-    let y = Math.floor((clientY - rect.top) / 40);
+    let x = Math.floor((event.clientX - rect.left) / 40); //event.が何しているか不明
+    let y = Math.floor((event.clientY - rect.top) / 40); //event.が何しているか不明
     putStone(x, y);
 }
 
