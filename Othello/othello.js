@@ -4,11 +4,11 @@ const E = document
     .addEventListener("click", userClickMouse);
 
 let Game = {
-    player:"white",
-    turn:1,
+    player: "white",
+    turn: 1,
     white: 2,
     black: 2,
-    playerCanSetCells:[],
+    playerCanSetCells: [],
 };
 
 startGame();
@@ -47,11 +47,10 @@ function startGame() {
     Game.turn = 1;
     drawBoardSurface();
     setInitialStones();
-    canPlayerSetSomewhere(Game.player)
-    Game.white=countStones()[0]
-    Game.black=countStones()[1]
+    canPlayerSetSomewhere(Game.player);
+    Game.white = countStones()[0];
+    Game.black = countStones()[1];
     console.log(Game);
-
 }
 // ターンを1つ進め、プレイヤーを入れ替える関数
 function incrementTurn() {
@@ -67,89 +66,78 @@ function incrementTurn() {
     return setTimeout(canPlayerSetSomewhere, 500, Game.player);
 }
 
-function SetPlayerCanSetCellsInfo(cells){
+function SetPlayerCanSetCellsInfo(cells) {
     // console.log(cells)
-    Game.playerCanSetCells=cells
+    Game.playerCanSetCells = cells;
 }
-
 
 // 置ける場所があるかを確認する関数。
 //  黒をNPCとして、ランダムな場所に設置するようにしている。
 function canPlayerSetSomewhere(player) {
     // console.log("canPlayerSetSomewhere(player)",player)
-    let setStoneCellInfo=[]
+    let setStoneCellInfo = [];
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            if (isGreen(i,j)==true){
-                setStoneCellInfo.push(determineToReverse(i,j,player,2));
-            } 
-            // else {
-            //     //pass
-            // }
+            if (isGreen(i, j) == true) {
+                setStoneCellInfo.push(determineToReverse(i, j, player, 2));
+            }
         }
     }
     // 取得してきた配列が空の配列の場合があるので除去する。
     let playerCanSetStoneCells = [];
-    for (let k =0;k<setStoneCellInfo.length;k++){
-        if (setStoneCellInfo[k].length>0){
-            playerCanSetStoneCells.push(setStoneCellInfo[k])
+    for (let k = 0; k < setStoneCellInfo.length; k++) {
+        if (setStoneCellInfo[k].length > 0) {
+            playerCanSetStoneCells.push(setStoneCellInfo[k]);
         }
     }
     // console.log(playerCanSetStoneCells)
-    SetPlayerCanSetCellsInfo(playerCanSetStoneCells)
+    SetPlayerCanSetCellsInfo(playerCanSetStoneCells);
 
     // COMの黒の置く位置をランダムに決定
     if (playerCanSetStoneCells.length == 0) {
         playerCantSetAnywhere();
     }
-    if (player=="black"){
-        let blackscharacter=decideBlackCharacter()
-        let xy=decideBlacksCell(blackscharacter)
-        let x=xy[0]
-        let y=xy[1]
+    if (player == "black") {
+        let blackscharacter = decideBlackCharacter();
+        let xy = decideBlacksCell(blackscharacter);
+        let x = xy[0];
+        let y = xy[1];
         putStone(x, y);
-        }
-        //  else {
-        //     //pass
-        // }
+    }
 }
 
 // COMの黒の振る舞いを決める関数
-function decideBlackCharacter(){
+function decideBlackCharacter() {
     let num = Math.floor(Math.random() * 10) % 5;
-    if (num ==0){
-        return "random"
-    }else{
-        return "greed"
+    if (num == 0) {
+        return "random";
+    } else {
+        return "greed";
     }
 }
 
 // COMの黒が置く場所を決める関数
-function decideBlacksCell(character){
-    let arr=Game.playerCanSetCells
-    if (character=="random"){
+function decideBlacksCell(character) {
+    let arr = Game.playerCanSetCells;
+    if (character == "random") {
         let num = Math.floor(Math.random() * 10) % arr.length;
         let x = arr[num][0][0];
         let y = arr[num][0][1];
-        return [x,y]
-    }else{
-        let maxStoneNum=0
-        let maxStoneNumIndex=0
-        for (let i=0;i<arr.length;i++){
-            stoneNum=arr[2]
-            if (stoneNum>maxStoneNum){
-                maxStoneNum=stoneNum
-                maxStoneNumIndex=i
+        return [x, y];
+    } else {
+        let maxStoneNum = 0;
+        let maxStoneNumIndex = 0;
+        for (let i = 0; i < arr.length; i++) {
+            stoneNum = arr[2];
+            if (stoneNum > maxStoneNum) {
+                maxStoneNum = stoneNum;
+                maxStoneNumIndex = i;
             }
         }
-        let x=arr[maxStoneNumIndex][0][0]
-        let y=arr[maxStoneNumIndex][0][1]
-        // console.log(arr)
-        // console.log(arr[maxStoneNumIndex][0])
-        // console.log("hage")
-        return[x,y]
+        let x = arr[maxStoneNumIndex][0][0];
+        let y = arr[maxStoneNumIndex][0][1];
+        return [x, y];
     }
-
 }
 
 // 置いた場所をconsole.logで出力する関数。
@@ -173,8 +161,8 @@ function playerCantSetStoneAlert() {
 // 置ける場所がない場合、アラートを出す関数。
 function playerCantSetAnywhere() {
     // console.log("playerCantSetAnywhere()")
-    if (haveFinished()==true) {
-        window.alert("The Winner is "+WhoIsWinner());
+    if (haveFinished() == true) {
+        window.alert("The Winner is " + WhoIsWinner());
         console.log(Game);
         return;
     } else {
@@ -186,25 +174,24 @@ function playerCantSetAnywhere() {
 
 // 盤面が白または黒で埋まっているかを判定する関数
 function haveFinished() {
-    if (Game.white + Game.black == 64 ||Game.turn>=65 )  {
-        return true
+    if (Game.white + Game.black == 64 || Game.turn >= 65) {
+        return true;
     } else {
         return false;
     }
 }
 
 // 勝者を返す関数
-function WhoIsWinner(){
-    if (Game.white==Game.black){
-        return "Even"
+function WhoIsWinner() {
+    if (Game.white == Game.black) {
+        return "Even";
     }
-    if (Game.white>Game.black){
-        return "White"
-    }else{
-        return "black"
+    if (Game.white > Game.black) {
+        return "White";
+    } else {
+        return "black";
     }
 }
-
 
 // 盤面---------------------------------------------------------------------
 // オセロの盤面を描画する関数
@@ -250,7 +237,6 @@ function setInitialStones() {
     drawStone(4, 4, "black");
 }
 
-
 // 位置(x,y)の情報を取得する関数
 //      (戻り値は配列で[x,y,色])
 function getCellInfomationData(x, y) {
@@ -279,7 +265,7 @@ function countStones() {
                 whiteNum += 1;
             } else if (color == "black") {
                 blackNum += 1;
-            } 
+            }
             // else {
             //     //pass // 緑なら何もしない
             // }
@@ -318,34 +304,39 @@ function isGreen(x, y) {
 }
 
 // 置いた位置(x,y)で、石を反転させられるかを判定し実行する関数
-function determineToReverse(x,y,color,mode){
+function determineToReverse(x, y, color, mode) {
     // ひっくり返す判定の方向を定義
-    let directions=[[0,0],                      //pass
-                    [-1,-1] , [0,-1] , [1,-1] , //左上 ,    上  ,   右上
-                    [-1,0]  ,          [1,0]  , //左   ,            右
-                    [-1,1]  , [0,1]  , [1,1]    //左下 ,    下  ,   右下
-                ]
-    let xyz=[]  //mode==2用の空配列各要素は[x,y,z](※z:(x,y)に置いたときのひっくり返せる石の数)
-    let playerCanPutStoneInfomation=[]
-    for (let i=1;i<=8;i++){
-            // (x,y)が判定方向の端または、端から1つであればi++
-        if (isHereEdge(x,y,directions[i])==true){
-            continue
+    let directions = [
+        [0, 0], //pass
+        [-1, -1],
+        [0, -1],
+        [1, -1], //左上 ,    上  ,   右上
+        [-1, 0],
+        [1, 0], //左   ,            右
+        [-1, 1],
+        [0, 1],
+        [1, 1], //左下 ,    下  ,   右下
+    ];
+    let xyz = []; //mode==2用の空配列各要素は[x,y,z](※z:(x,y)に置いたときのひっくり返せる石の数)
+    let playerCanPutStoneInfomation = [];
+    for (let i = 1; i <= 8; i++) {
+        // (x,y)が判定方向の端または、端から1つであればi++
+        if (isHereEdge(x, y, directions[i]) == true) {
+            continue;
         }
-        let nextX = x+directions[i][0]
-        let nextY = y+directions[i][1]
-        let nextCellColorName = getCellInfomationData(nextX,nextY)[2]
-                // 判定していく方向の隣を確認して緑、または自分と同じ色であればi++
-        if (nextCellColorName =="green" || nextCellColorName==color){
-            continue
+        let nextX = x + directions[i][0];
+        let nextY = y + directions[i][1];
+        let nextCellColorName = getCellInfomationData(nextX, nextY)[2];
+        // 判定していく方向の隣を確認して緑、または自分と同じ色であればi++
+        if (nextCellColorName == "green" || nextCellColorName == color) {
+            continue;
         }
-                    // 上記以外で反転させていけるかを確認していく。
+        // 上記以外で反転させていけるかを確認していく。
         let oppColor = getOppositionColorName(color);
         let changeCells = [];
         for (let j = 1; j <= 8; j++) {
-            let targetCell =[x + (directions[i][0] * j), y + (directions[i][1]*j)]
-            // console.log(i,j,targetCell)
-            if (oppColor == getCellInfomationData(targetCell[0],targetCell[1])[2]) {
+            let targetCell = [x + directions[i][0] * j, y + directions[i][1] * j];
+            if (oppColor == getCellInfomationData(targetCell[0], targetCell[1])[2]) {
                 // 自分と違う色の場合、確認した位置(x,y)をchangeCellsに記録する。
                 changeCells.push(targetCell);
             } else if (
@@ -357,7 +348,7 @@ function determineToReverse(x,y,color,mode){
                     for (let k = 0; k < changeCells.length; k++) {
                         reverseStone(changeCells[k][0], changeCells[k][1]);
                     }
-                    break
+                    break;
                 } else {
                     //  mode2 をやむなく追加。以下理由。
                     //  ・返せる箇所があるかの判定のため。
@@ -365,78 +356,83 @@ function determineToReverse(x,y,color,mode){
                     playerCanPutStoneInfomation.push([x, y, changeCells.length]);
                 }
             } else {
-                break
+                break;
             }
         }
-        continue
+        continue;
     }
-    return playerCanPutStoneInfomation // 戻り値は配列[[x,y,z],[x,y,z],...]
-                                            // zは、(x,y)に置いたときにひっくり返せる石の数
+    return playerCanPutStoneInfomation; // 戻り値は配列[[x,y,z],[x,y,z],...]
+    // zは、(x,y)に置いたときにひっくり返せる石の数
 
     // 置いた位置と、判定する方向からもし端(と端の1つ手前)であれば返せる石がない。
     // determineToReverse の中だけで使われる関数。
-    function isHereEdge(x,y,arr){
-        if (arr[0]==-1 && arr[1]==-1){  // 左上方向
+    function isHereEdge(x, y, arr) {
+        if (arr[0] == -1 && arr[1] == -1) {
+            // 左上方向
             if (x == 0 || x == 1 || y == 0 || y == 1) {
-                return true
-            }else{
-                return false
+                return true;
+            } else {
+                return false;
             }
         }
-        if (arr[0]==0 && arr[1]==-1){   //上方向
+        if (arr[0] == 0 && arr[1] == -1) {
+            //上方向
             if (y == 0 || y == 1) {
-                return true
-            }else{
-                return false
+                return true;
+            } else {
+                return false;
             }
         }
-        if (arr[0]==1 && arr[1]==-1){   //右上方向
+        if (arr[0] == 1 && arr[1] == -1) {
+            //右上方向
             if (x == 7 || x == 6 || y == 0 || y == 1) {
-                return true
-            }else{
-                return false
+                return true;
+            } else {
+                return false;
             }
         }
-        if (arr[0]==-1 && arr[1]==0){   //左方向
+        if (arr[0] == -1 && arr[1] == 0) {
+            //左方向
             if (x == 0 || x == 1) {
-                return true
-            }else{
-                return false
+                return true;
+            } else {
+                return false;
             }
         }
-        if (arr[0]==1 && arr[1]==0){    //右方向
+        if (arr[0] == 1 && arr[1] == 0) {
+            //右方向
             if (x == 7 || x == 6) {
-                return true
-            }else{
-                return false
+                return true;
+            } else {
+                return false;
             }
         }
-        if (arr[0]==-1 && arr[1]==1){   //左下方向
+        if (arr[0] == -1 && arr[1] == 1) {
+            //左下方向
             if (x == 0 || x == 1 || y == 7 || y == 6) {
-                return true
-            }else{
-                return false
+                return true;
+            } else {
+                return false;
             }
         }
-        if (arr[0]==0 && arr[1]==1){    //下方向
+        if (arr[0] == 0 && arr[1] == 1) {
+            //下方向
             if (y == 7 || y == 6) {
-                return true
-            }else{
-                return false
+                return true;
+            } else {
+                return false;
             }
         }
-        if (arr[0]==1 && arr[1]==1){    //右下方向
+        if (arr[0] == 1 && arr[1] == 1) {
+            //右下方向
             if (x == 7 || x == 6 || y == 7 || y == 6) {
-                return true
-            }else{
-                return false
+                return true;
+            } else {
+                return false;
             }
         }
     }
-
 }
-
-
 
 // 石----------------------------------------------------------------------
 // 位置(x,y)にplayerのcolor("white" or "black")を描画する関数
@@ -484,7 +480,6 @@ function getOppositionColorName(color) {
     return oppColor;
 }
 
-
 // プレイヤー-----------------------------------------------------------
 // 石をおいて、遊んでいく、メインの関数
 function putStone(x, y) {
@@ -493,9 +488,9 @@ function putStone(x, y) {
     const ctx = CANVAS.getContext("2d");
     let player = Game.player;
 
-    if (canPlayerSetHere(x,y,player) == true) {
+    if (canPlayerSetHere(x, y, player) == true) {
         drawStone(x, y, player);
-        determineToReverse(x,y,player,1)
+        determineToReverse(x, y, player, 1);
         let score = countStones();
         Game.white = score[0];
         Game.black = score[1];
@@ -504,25 +499,22 @@ function putStone(x, y) {
     }
 }
 
-function canPlayerSetHere(x,y,player){
-    if (isGreen==false){
-        return playerCantSetStoneAlert()
+function canPlayerSetHere(x, y, player) {
+    if (isGreen == false) {
+        return playerCantSetStoneAlert();
     }
-    let isHereTheRightPlace=false
-    let arr=Game.playerCanSetCells
+    let isHereTheRightPlace = false;
+    let arr = Game.playerCanSetCells;
     // for (let i=0; i<Object.keys(Game.playerCanSetCells).length;i++){
-    for (let i=0; i<arr.length;i++){
+    for (let i = 0; i < arr.length; i++) {
         // console.log(arr[i][0])
-        if (x==arr[i][0][0] && y==arr[i][0][1]){
-            isHereTheRightPlace=true
+        if (x == arr[i][0][0] && y == arr[i][0][1]) {
+            isHereTheRightPlace = true;
         }
-        // else{
-        //     // pass
-        // }
     }
-    if (isHereTheRightPlace==false){
-        return playerCantReverseStoneAlert()
-    }else{
-        return true
+    if (isHereTheRightPlace == false) {
+        return playerCantReverseStoneAlert();
+    } else {
+        return true;
     }
 }
