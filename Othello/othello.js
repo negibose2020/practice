@@ -307,16 +307,11 @@ function isGreen(x, y) {
 function determineToReverse(x, y, color, mode) {
     // ひっくり返す判定の方向を定義
     let directions = [
-        [0, 0], //pass
-        [-1, -1],
-        [0, -1],
-        [1, -1], //左上 ,    上  ,   右上
-        [-1, 0],
-        [1, 0], //左   ,            右
-        [-1, 1],
-        [0, 1],
-        [1, 1], //左下 ,    下  ,   右下
-    ];
+                        [0, 0], //pass
+                        [-1, -1],   [0, -1],   [1, -1], //左上 ,    上  ,   右上
+                        [-1, 0],                [1, 0], //左   ,            右
+                        [-1, 1],    [0, 1],     [1, 1], //左下 ,    下  ,   右下
+                    ];
     let xyz = []; //mode==2用の空配列各要素は[x,y,z](※z:(x,y)に置いたときのひっくり返せる石の数)
     let playerCanPutStoneInfomation = [];
     for (let i = 1; i <= 8; i++) {
