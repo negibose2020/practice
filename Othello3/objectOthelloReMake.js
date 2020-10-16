@@ -36,26 +36,20 @@ class Game{
 
 class Player1{
     constructor(){
-        this.color="white"
-        // this.E= document
-        //     .getElementById("canvas")
-        //     .addEventListener("click", this.userClickMouse());
+        this.color="white"    
         }
     userClickMouse() {
-        // const E= document
-        //     .getElementById("canvas")
-        //     .addEventListener("click", this.userClickMouse());
-        // const CANVAS = document.getElementById("canvas");
-        // const rect = CANVAS.getBoundingClientRect();
-        // const x = Math.floor((event.clientX - rect.left) / 40); //event.が何しているか不明
-        // const y = Math.floor((event.clientY - rect.top) / 40); //event.が何しているか不明
-        // this.putStone(x, y);
+        const E= document
+            .getElementById("canvas")
+            .addEventListener("click", this.userClickMouse);
+        const CANVAS = document.getElementById("canvas");
+        const rect = CANVAS.getBoundingClientRect();
+        const x = Math.floor((event.clientX - rect.left) / 40); //event.が何しているか不明
+        const y = Math.floor((event.clientY - rect.top) / 40); //event.が何しているか不明
+        this.putStone(x, y);
     }
     putStone(x,y){
         console.log(x,y)
-    }
-    hoge(){
-        console.log("hoge")
     }
 }
 
@@ -114,14 +108,4 @@ class Board{
 }
 
 
-function startGame(){
-    let othello = new Game()
-}
-function userClickMouse() {
-    const CANVAS = document.getElementById("canvas");
-    const rect = CANVAS.getBoundingClientRect();
-    const x = Math.floor((event.clientX - rect.left) / 40); //event.が何しているか不明
-    const y = Math.floor((event.clientY - rect.top) / 40); //event.が何しているか不明
-    // console.log(x,y)
-    othello.player1.putStone(x, y);
-}
+const othello = new Game()
