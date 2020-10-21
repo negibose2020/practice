@@ -51,6 +51,7 @@ class Game {
     this.blackStoneNum = othello.board.countStones(2);
     this.turn++;
     this.playingPlayerColorNum = nextPlayerNum;
+    this.displayHTML()
     if (this.whiteStoneNum == 0 || this.blackStoneNum == 0) {
       this.completeDefeat();
     }
@@ -96,6 +97,24 @@ class Game {
       return (this.winnerNum = 0);
     }
   }
+  displayHTML(){
+      const displayPlayer = document.getElementById("player");
+      const displayTurn = document.getElementById("turn");
+      const displayWhiteStoneNum = document.getElementById("whiteStoneNum");
+      const displayBlackStoneNum = document.getElementById("blackStoneNum");
+      let playingPlayer
+      if (this.playingPlayerColorNum==1){
+          playingPlayer="white"
+      }else{
+          playingPlayer="black"
+      }
+      displayPlayer.innerText = "player: " + playingPlayer;
+      displayTurn.innerText = "turn: " + this.turn;
+      displayWhiteStoneNum.innerText = "White: " + this.whiteStoneNum;
+      displayBlackStoneNum.innerText = "Black: " + this.blackStoneNum;
+      return;
+  }
+
 
   // Alerts
   alreadySetStoneHere() {
@@ -392,3 +411,4 @@ class Board {
 }
 
 const othello = new Game();
+othello.displayHTML()
