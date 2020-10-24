@@ -1,0 +1,55 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>OthelloLikeGame</title>
+    <style>
+        body {
+            background-color: black;
+            text-align: center;
+        }
+
+        #canvas {
+            background-color: green;
+        }
+    </style>
+    <script src="OthelloLikeGame.js" charset="UTF-8" defer></script>
+
+</head>
+
+<body>
+    <p style="color: white;">じぶんの色をせんたく：
+        <input type="button" id="id_color_WHITE" style="color: gray;" onclick="player1ColorWhite()" value="white">
+        <input type="button" id="id_color_BLUE" style="color: blue;" onclick="player1ColorBlue()" value="blue">
+        <input type="button" id="id_color_BLACK" style="color: black;" onclick="player1ColorBlack()" value="black">
+        <input type="button" id="id_color_RED" style="color: red;" onclick="player1ColorRed()" value="red">
+        <input type="button" id="id_color_GREEN" style="color: green;" onclick="player1ColorGreen()" value="green">
+    </p>
+    <hr>
+    <div>
+        <P></P>
+    </div>
+    <div id="player" style="color: white;">
+        <p>　</p>
+    </div>
+    <div id="turn" style="color: white;">
+        <p>　</p>
+    </div>
+    <div>
+        <P></P>
+    </div>
+    <canvas id="canvas" width="0" height="0" onclick="othello.player1.userClickMouse();"></canvas>
+    <div>
+        <P></P>
+    </div>
+    <dev id="whiteStoneNum" style="color: white;">
+        <p>　</p>
+    </dev>
+    <dev id="blackStoneNum" style="color: white;">
+    <div></div>
+        <p>　</p>
+    </dev>
+
+</body>
+
+</html>
